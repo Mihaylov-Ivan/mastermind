@@ -24,16 +24,16 @@ class CodeBreaker < Game
         until @correct_guess || turns == 12
             prompt_guess(12 - turns)
             @current_guess = get_code_input
-            @current_guess_formatted = format_guess(@current_guess.clone)
+            @current_guess_formatted = format_code(@current_guess.clone)
             @clues = create_clues(@code.clone, @current_guess)
             @clues_formatted = format_clues(@clues.clone)
             puts @code
             show_guess_results(@current_guess_formatted, @clues_formatted)
-            check_correct_guess(@clues)
+            @correct_guess = check_correct_guess(@clues)
             turns+=1
             puts code
         end
-        @correct_guess ? show_correct_guess(turns) : show_out_of_turns(format_guess(code))
+        @correct_guess ? show_correct_guess(turns) : show_out_of_turns(format_code(code))
     end
 
     private 

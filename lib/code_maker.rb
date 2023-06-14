@@ -13,14 +13,12 @@ class CodeMaker < Game
     def initialize
         code_maker_intro
         @code = get_code_input
-        @exact = nil
-        @same = nil
+        @guess_record = []
         @turn = 1
     end
 
     def play
         numbers = ["1", "2", "3", "4", "5", "6"].shuffle!
-        @guess_record = []
         four_numbers = find_four_numbers(numbers)
         return game_over if turn > 12
         guess_perm = four_numbers.permutation.to_a.uniq
@@ -29,8 +27,7 @@ class CodeMaker < Game
             sleep(1)
             show_computer_turn(turn)
             clues = make_a_turn(guess_perm[0])
-            correct_guess = clues.all?("*")
-            break if correct_guess
+            break if check_correct_guess(clues)
             reduce_permutations(guess_perm)
             @turn += 1
         end
@@ -43,7 +40,7 @@ class CodeMaker < Game
         guess.append(numbers[index]) until guess.length == 4
         clues = make_a_turn(guess)
         guess.pop(4-exact-same)
-        return if turn > 12
+        return if turn > 12 || check_correct_guess(clues)
         @turn += 1
         find_four_numbers(numbers, guess, index + 1) unless clues.length == 4
         guess
@@ -54,7 +51,7 @@ class CodeMaker < Game
         @exact = clues.count("*")
         @same = clues.count("?")
         guess_record.append([guess.clone, exact, same])
-        show_guess_results(format_guess(guess), format_clues(clues))
+        show_guess_results(format_code(guess), format_clues(clues))
         clues
     end
 

@@ -68,13 +68,13 @@ class Game
         formatted_clues
     end
 
-    def format_guess(guess)
+    def format_code(guess)
         formatted_guess = guess.map {|n| code_colors(n)}
         formatted_guess
     end
 
     def check_correct_guess(clues)
-        @correct_guess = clues.all?("*") && clues.length == 4
+        clues.all?("*") && clues.length == 4
     end
 
     private
