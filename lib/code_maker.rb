@@ -1,54 +1,66 @@
+require 'pry-byebug'
+
 require './text_formatting'
 require './display.rb'
 
-class CodeBreaker < Game
+class CodeMaker < Game
     include TextFormatting
     include Display
 
-    attr_reader :current_guess_formatted, :clues_formatted, :clues
+    attr_accessor :guess_record, :turn, :exact, :same
     attr_reader :code
 
     def initialize
-        @code = []
-        @current_guess = []
-        @current_guess_formatted = []
-        @clues = []
-        @clues_formatted = []
-        generate_code
-        code_breaker_intro
+        code_maker_intro
+        @code = get_code_input
+        @exact = nil
+        @same = nil
+        @turn = 1
     end
 
     def play
-        moves = 0
-        until @correct_guess || moves == 12
-            prompt_guess(12 - moves)
-            get_guess
-            get_clues
-            puts @code
-            show_guess_results(@current_guess_formatted, @clues_formatted)
-            check_correct_guess(@clues)
-            moves+=1
+        numbers = ["1", "2", "3", "4", "5", "6"].shuffle!
+        @guess_record = []
+        four_numbers = find_four_numbers(numbers)
+        guess_perm = four_numbers.permutation.to_a.uniq
+        reduce_permutations(guess_perm)
+        until turn == 13
+            sleep(1)
+            show_computer_turn(turn)
+            clues = make_a_turn(guess_perm[0])
+            correct_guess = clues.all?("*")
+            break if correct_guess
+            reduce_permutations(guess_perm)
+            @turn += 1
         end
-        @correct_guess ? show_correct_guess(moves) : show_out_of_moves
     end
 
-    private 
-
-    def get_guess
-        @current_guess = get_code_input
-        @current_guess_formatted = @current_guess.map {|n| code_colors(n)}
-    end
-
-    def get_clues
-        @clues = create_clues(@code.clone, @current_guess)
-        @clues_formatted = @clues.map {|n| clue_colors(n)}
-    end
-
-    def generate_code
-        6.times do 
-            num = rand(1..6)
-            @code.push(num.to_s)
+    def reduce_permutations(guess_perm)
+        guess_record.each do |guess|
+            guess_perm.each do |perm|
+                clues = create_clues(guess[0].clone, perm.clone)
+                guess_perm.reject! {|reject| reject == perm} unless guess[1] == clues.count('*') && guess[2] == clues.count('?')
+            end
         end
-        @code = ["1", "3", "5", "3", "2", "5"]
+    end
+
+    def find_four_numbers(numbers, guess = [], index = 0)
+        sleep(1)
+        show_computer_turn(turn)
+        guess.append(numbers[index]) until guess.length == 4
+        clues = make_a_turn(guess)
+        guess.pop(4-exact-same)
+        @turn += 1
+        find_four_numbers(numbers, guess, index + 1) unless clues.length == 4
+        guess
+    end
+
+    def make_a_turn(guess)
+        clues = create_clues(code.clone, guess.clone)
+        @exact = clues.count("*")
+        @same = clues.count("?")
+        guess_record.append([guess.clone, exact, same])
+        show_guess_results(format_guess(guess), format_clues(clues))
+        clues
     end
 end

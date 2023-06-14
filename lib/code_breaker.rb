@@ -14,35 +14,28 @@ class CodeBreaker < Game
         @current_guess_formatted = []
         @clues = []
         @clues_formatted = []
+        @correct_guess = false
         generate_code
         code_breaker_intro
     end
 
     def play
-        moves = 0
-        until @correct_guess || moves == 12
-            prompt_guess(12 - moves)
-            get_guess
-            get_clues
+        turns = 0
+        until @correct_guess || turns == 12
+            prompt_guess(12 - turns)
+            @current_guess = get_code_input
+            @current_guess_formatted = format_guess(@current_guess.clone)
+            @clues = create_clues(@code.clone, @current_guess)
+            @clues_formatted = format_clues(@clues.clone)
             puts @code
             show_guess_results(@current_guess_formatted, @clues_formatted)
             check_correct_guess(@clues)
-            moves+=1
+            turns+=1
         end
-        @correct_guess ? show_correct_guess(moves) : show_out_of_moves
+        @correct_guess ? show_correct_guess(turns) : show_out_of_turns
     end
 
     private 
-
-    def get_guess
-        @current_guess = get_code_input
-        @current_guess_formatted = @current_guess.map {|n| code_colors(n)}
-    end
-
-    def get_clues
-        @clues = create_clues(@code.clone, @current_guess)
-        @clues_formatted = @clues.map {|n| clue_colors(n)}
-    end
 
     def generate_code
         6.times do 

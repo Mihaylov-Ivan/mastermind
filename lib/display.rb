@@ -26,12 +26,24 @@ module Display
         HEREDOC
     end
 
-    def prompt_guess(moves)
-        puts "Make a guess! You have #{moves} moves left."
+    def code_maker_intro
+        puts <<~HEREDOC
+            Okay, let's go Code Maker!
+
+            Choose your code now!
+        HEREDOC
+    end
+
+    def prompt_guess(turns)
+        puts "Make a guess! You have #{turns} turns left."
+    end
+
+    def show_computer_turn(turn)
+        puts "Computer guess: #{turn}"
     end
 
     def show_guess_input_error
-        puts "\e[31mPlease, enter a 6 digit number, e.g. 154698 or 1 5 3 8 4 6.\e[0m"
+        puts "\e[31mPlease, enter a 4 digit number, e.g. 1545 or 1 5 4 5.\e[0m"
     end
 
     def show_guess_results(guess, clues)
@@ -48,8 +60,24 @@ module Display
         puts "Correct guess! You guessed it on the #{move}#{extension} move." 
     end
 
-    def show_out_of_moves
-        puts "Game over! You are out of moves."
+    def show_out_of_turns
+        puts "Game over! You are out of turns."
+    end
+
+    def show_computer_correct_guess(turn)
+        extension = "th"
+        extension = "st" if turn == 1
+        extension = "nd" if turn == 2
+        extension = "rd" if turn == 3
+        puts "Game over! The computer broke your code on the #{turn}#{extension} guess." 
+    end
+
+    def show_out_of_turns
+        puts "Game over! You are out of turns."
+    end
+
+    def show_computer_out_of_turns
+        puts "You win! Computer is out of turns."
     end
 
     def instructions

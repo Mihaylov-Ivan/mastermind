@@ -7,20 +7,19 @@ class Game
     include Display
 
     def initialize
-        @correct_guess = false
+        @game_mode = nil
         instructions
         prompt_game_mode
-        @game_mode = get_game_mode
-        # @game_mode == "1" ? play_code_maker : play_code_breaker
-        # @game_mode == "1" ? play_code_breaker : play_code_breaker
-        @game_mode == "1" ? (CodeBreaker.new).play : (CodeBreaker.new).play
+        get_game_mode
+        @game_mode == "1" ? (CodeMaker.new).play : (CodeBreaker.new).play
+
     end
 
     protected
 
     def get_code_input
         code = gets.chomp.gsub(/\s+/, "").split("")
-        until code.all? {|item| item.match?(/[1-6]$/)} && code.length == 6
+        until code.all? {|item| item.match?(/[1-6]$/)} && code.length == 4
             show_guess_input_error
             code = gets.chomp.gsub(/\s+/, "").split("")
         end
@@ -28,26 +27,46 @@ class Game
     end
 
     def create_clues(code, guess)
-        match = []
+        # binding.pry
+        temp_code = code.clone
+        temp_guess= guess.clone
+        exact = exact_number(temp_code, temp_guess)
+        same = same_number(temp_code, temp_guess)
+        clues = exact + same
+    end
+
+    def exact_number(temp_code, temp_guess)
         clues = []
-        code_index = nil
-        guess.each_with_index do |guess_digit, guess_index|
-            if guess_digit == code[guess_index]
-                clues.insert(0, "*")
-                puts code.inspect
-                code[guess_index] = "x"
-                guess[guess_index] = "x"
-            else
-                match = code.select {|code_digit| code_digit == guess_digit}
-                if match.uniq.length == 1 then
-                    i = code.index(guess_digit)
-                    code[i] = "x"
-                    guess[guess_index] = "x"
-                    clues.append("?")
-                end
+        temp_guess.each_with_index do |guess_digit, guess_index|
+            if guess_digit == temp_code[guess_index] then
+                temp_code[guess_index] = "x"
+                temp_guess[guess_index] = "x"
+                clues.append("*")
             end
         end
         clues
+    end
+
+    def same_number(temp_code, temp_guess)
+        clues = []
+        temp_guess.each_with_index do |guess_digit, guess_index|
+            next unless temp_guess[guess_index] != 'x' && temp_code.include?(guess_digit)
+            temp_guess[guess_index] = "x"
+            i = temp_code.index(guess_digit)
+            temp_code[i] = "x"
+            clues.append("?")
+        end
+        clues
+    end
+
+    def format_clues(clues)
+        formatted_clues = clues.map {|n| clue_colors(n)}
+        formatted_clues
+    end
+
+    def format_guess(guess)
+        formatted_guess = guess.map {|n| code_colors(n)}
+        formatted_guess
     end
 
     def check_correct_guess(clues)
@@ -62,21 +81,5 @@ class Game
             show_game_mode_input_error
             get_game_mode
         end
-    end
-
-    def play_code_breaker
-        player = (CodeBreaker.new).play
-        player.play
-        # code_breaker_intro
-        # until @correct_guess || moves == 12
-        #     prompt_guess(12 - moves)
-        #     player.get_guess
-        #     player.get_clues
-        #     puts player.code
-        #     show_guess_results(player.current_guess_formatted, player.clues_formatted)
-        #     check_correct_guess(player.clues)
-        #     moves+=1
-        # end
-        # @correct_guess ? show_correct_guess(moves) : show_out_of_moves
     end
 end
