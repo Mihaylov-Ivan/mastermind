@@ -7,6 +7,8 @@ require './code_maker.rb'
 
 def play
     mastermind = Game.new
+
+    mastermind.play
 end
 
 play

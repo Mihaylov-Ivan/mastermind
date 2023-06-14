@@ -9,10 +9,15 @@ class Game
     def initialize
         @game_mode = nil
         instructions
+    end
+    
+    def play
         prompt_game_mode
         get_game_mode
         @game_mode == "1" ? (CodeMaker.new).play : (CodeBreaker.new).play
-
+        prompt_play_again
+        play_again = gets.chomp.downcase
+        play_again == "y" ? play : puts("Thanks for playing!")
     end
 
     protected
@@ -27,7 +32,6 @@ class Game
     end
 
     def create_clues(code, guess)
-        # binding.pry
         temp_code = code.clone
         temp_guess= guess.clone
         exact = exact_number(temp_code, temp_guess)
@@ -70,7 +74,7 @@ class Game
     end
 
     def check_correct_guess(clues)
-        @correct_guess = clues.all?{|clue| clue == "*"} && clues.length == 6
+        @correct_guess = clues.all?("*") && clues.length == 4
     end
 
     private

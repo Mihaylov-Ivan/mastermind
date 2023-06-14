@@ -30,7 +30,7 @@ class CodeMaker < Game
             show_computer_turn(turn)
             clues = make_a_turn(guess_perm[0])
             correct_guess = clues.all?("*")
-            # break if correct_guess
+            break if correct_guess
             reduce_permutations(guess_perm)
             @turn += 1
         end

@@ -31,17 +31,17 @@ class CodeBreaker < Game
             show_guess_results(@current_guess_formatted, @clues_formatted)
             check_correct_guess(@clues)
             turns+=1
+            puts code
         end
-        @correct_guess ? show_correct_guess(turns) : show_out_of_turns
+        @correct_guess ? show_correct_guess(turns) : show_out_of_turns(format_guess(code))
     end
 
     private 
 
     def generate_code
-        6.times do 
+        4.times do 
             num = rand(1..6)
             @code.push(num.to_s)
         end
-        @code = ["1", "3", "5", "3", "2", "5"]
     end
 end

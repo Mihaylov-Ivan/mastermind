@@ -60,9 +60,12 @@ module Display
         puts "Correct guess! You guessed it on the #{move}#{extension} move." 
     end
 
-    def show_out_of_turns
-        puts "Game over! You are out of turns."
-    end
+    def show_out_of_turns(code)
+        puts <<~HEREDOC
+            "Game over! You are out of turns."
+            The correct code was #{code.join}
+        HEREDOC
+        end
 
     def show_computer_correct_guess(turn)
         extension = "th"
@@ -72,12 +75,12 @@ module Display
         puts "Game over! The computer broke your code on the #{turn}#{extension} guess." 
     end
 
-    def show_out_of_turns
-        puts "Game over! You are out of turns."
-    end
-
     def show_computer_out_of_turns
         puts "You win! Computer is out of turns."
+    end
+
+    def prompt_play_again
+        puts "Do you want to play again? (y / n)"
     end
 
     def instructions
