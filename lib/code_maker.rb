@@ -65,6 +65,6 @@ class CodeMaker < Game
     end
 
     def game_over
-        turn < 13 ? show_computer_correct_guess(turn) : show_computer_out_of_turns
+        turn < 13 ? show_computer_win(turn) : show_computer_out_of_turns
     end
 end

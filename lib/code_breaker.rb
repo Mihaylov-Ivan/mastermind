@@ -26,7 +26,7 @@ class CodeBreaker < Game
             break if check_correct_guess(clues)
             turns += 1
         end
-        turns < 13 ? show_correct_guess(turns) : show_out_of_turns(format_code(code))
+        turns < 13 ? show_player_win(turns) : show_player_out_of_turns(format_code(code))
     end
 
     private 

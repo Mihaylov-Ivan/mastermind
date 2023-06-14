@@ -52,7 +52,7 @@ module Display
         HEREDOC
     end
 
-    def show_correct_guess(move)
+    def show_player_win(move)
         extension = "th"
         extension = "st" if move == 1
         extension = "nd" if move == 2
@@ -60,14 +60,14 @@ module Display
         puts "Correct guess! You guessed it on the #{move}#{extension} move." 
     end
 
-    def show_out_of_turns(code)
+    def show_player_out_of_turns(code)
         puts <<~HEREDOC
             "Game over! You are out of turns."
             The correct code was #{code.join}
         HEREDOC
         end
 
-    def show_computer_correct_guess(turn)
+    def show_computer_win(turn)
         extension = "th"
         extension = "st" if turn == 1
         extension = "nd" if turn == 2
@@ -93,7 +93,7 @@ module Display
         
             There are six different number/color combinations:
         
-            #{code_colors(1)}#{code_colors(2)}#{code_colors(3)}#{code_colors(4)}#{code_colors(5)}#{code_colors(6)}
+            #{code_colors('1')}#{code_colors('2')}#{code_colors('3')}#{code_colors('4')}#{code_colors('5')}#{code_colors('6')}
         
         
             The code maker will choose four to create a 'master code'. For example,
